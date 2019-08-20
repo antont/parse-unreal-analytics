@@ -5,6 +5,16 @@ import json
 def eventattrs(e):
     return {i['name']:i['value'] for i in e['attributes']}
 
+def parseloc(locstr): #numbers from: 'X=-662.731 Y=491.465 Z=26.824'
+    components = locstr.split(' ')
+    
+    def float_of_comp(compstr):
+        v = compstr.split('=')[1]
+        return float(v)
+
+    coords = [float_of_comp(c) for c in components]
+    return coords        
+
 def parse_events(events):
     session = [] #all levels
     teleports = [] #teleports within a level
@@ -16,8 +26,8 @@ def parse_events(events):
         if ename == 'Teleport':
             eventdata = eventattrs(e)
             locstr = eventdata['Location']
-
-            teleports.append(locstr)
+            coords = parseloc(locstr)
+            teleports.append(coords)
         #if ename == 'Interact'
         #    countInteract += 1
         

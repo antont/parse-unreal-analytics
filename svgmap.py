@@ -1,7 +1,11 @@
 import pua
+import svgwrite
+
+dwg = svgwrite.Drawing('test.svg', profile='tiny')
 
 def draw(location):
     print(location)
+
 
 session = pua.get_session()
 
