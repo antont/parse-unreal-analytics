@@ -5,6 +5,8 @@ with open("data/Zotac06/282c0f304a7d160ff93664ad17e0a5db-2018.04.17-14.54.24.ana
 
 #print(data)
 
+#string constants to avoid typos in parsing .. todo?
+
 sessionId = data['sessionId']
 
 events = data['events']
@@ -23,8 +25,24 @@ print(leveldata)
 #first level should always be the library lobby
 assert leveldata['LevelName'] == 'MainLibrary'
 
-for e in events[2:20]:
+countTeleport = 0
+countInteract = 0
+for e in events[2:]:
     ename = e['eventName']
-    print(ename)
+    #print(ename)
+    if ename == 'Teleport':
+        countTeleport += 1
+    if ename == 'Interact':
+        countInteract += 1
     
-    #here we can get Teleport coord data within level, untill hit another BeginLevel
+    #here we can get Teleport coord data within level, until hit another BeginLevel
+    if ename == 'BeginLevel':
+        print("new BeginLevel")
+        print("Teleport count in prev was: %d" % countTeleport)
+        print("Interact count in prev was: %d" % countInteract)
+        countTeleport = 0
+        countInteract = 0
+
+        leveldata = {i['name']:i['value'] for i in e['attributes']}
+        print(leveldata)
+
