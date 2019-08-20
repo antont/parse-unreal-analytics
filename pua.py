@@ -2,6 +2,9 @@ import json
 
 #string constants to avoid typos in parsing .. todo?
 
+def eventattrs(e):
+    return {i['name']:i['value'] for i in e['attributes']}
+
 def parse_events(events):
     session = [] #all levels
     teleports = [] #teleports within a level
@@ -11,8 +14,11 @@ def parse_events(events):
         ename = e['eventName']
         #print(ename)
         if ename == 'Teleport':
-            teleports.append(e)
-        #if ename == 'Interact':
+            eventdata = eventattrs(e)
+            locstr = eventdata['Location']
+
+            teleports.append(locstr)
+        #if ename == 'Interact'
         #    countInteract += 1
         
         #here we can get Teleport coord data within level, until hit another BeginLevel
@@ -24,7 +30,7 @@ def parse_events(events):
             teleports = []
             #countInteract = 0
 
-            leveldata = {i['name']:i['value'] for i in e['attributes']}
+            leveldata = eventattrs(e)
             print(leveldata)
 
     return session
@@ -45,7 +51,7 @@ def get_session():
     beginLevel = events[1]
     #print(beginLevel)
     assert beginLevel['eventName'] == 'BeginLevel'
-    leveldata = {i['name']:i['value'] for i in beginLevel['attributes']}
+    leveldata = eventattrs(beginLevel)
     #for attr in levelattrs:
     print(leveldata)
 
