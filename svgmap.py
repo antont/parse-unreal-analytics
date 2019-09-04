@@ -1,8 +1,12 @@
 import pua
 import svgwrite
 
-def draw(x, y):
+def draw(dwg, prev_point, point):
     #print(location)
+    if prev_point is not None:
+        #print(f"Line: {prev_point, point}")
+        dwg.add(dwg.line(prev_point, point, stroke='blue'))
+
     dwg.add(dwg.circle((x, y), 10)) #stroke=svgwrite.rgb(10, 10, 16, '%')))
 
 session = pua.get_session() #could give the source log file pathname
@@ -13,11 +17,18 @@ for i, level in enumerate(session): #.levels: #could include metadata, now is ju
     all_x = []
     all_y = []
 
+    #previous teleport point so that can draw a line from there to current
+    prev_point = None
+
     for t in level: #.teleports:
         x, y, z = t #.location) 
-        draw(x, y)  #what if we wanna show what happened between the teleports? (interacts)
+        draw(dwg, prev_point, (x, y))  #what if we wanna show what happened between the teleports? (interacts)
+
+        #for bounds calc for viewbox below
         all_x.append(x)
         all_y.append(y)
+
+        prev_point = (x, y)
 
     min_x = min(all_x)
     max_x = max(all_x)
